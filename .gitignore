@@ -1,0 +1,22 @@
+# Audio files
+*.wav
+*.mp3
+*.m4a
+*.flac
+
+# Model weights
+*.pt
+*.pth
+*.bin
+*.safetensors
+OmniVoice/
+
+# Output directories
+outputs/
+omnivoice_test/outputs/
+omnivoice_test/results/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
