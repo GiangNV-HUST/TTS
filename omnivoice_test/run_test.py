@@ -143,6 +143,7 @@ def generate_chunked(
     clause_gap_ms: int = 150,
     comma_replace: str = " . ",
     end_padding_ms: int = 100,
+    text_suffix: str = "",
 ) -> tuple[torch.Tensor, list[str]]:
     """Chia text theo câu, generate từng câu, ghép lại."""
     text = normalize_commas(text, comma_replace)
@@ -150,6 +151,9 @@ def generate_chunked(
     audios = []
     for i, ch in enumerate(chunks, 1):
         text_in = ch["text"]
+        # Add suffix to last chunk to prevent cut-off
+        if text_suffix and i == len(chunks):
+            text_in = text_in + text_suffix
         print(f"    chunk {i}/{len(chunks)}: {text_in[:60]}{'...' if len(text_in) > 60 else ''}")
         kwargs = dict(text=text_in, ref_audio=ref_path, num_step=num_step, speed=speed)
         if ref_text:
@@ -200,6 +204,7 @@ def run_voice_cloning_test(
     clause_gap_ms: int = 150,
     comma_replace: str = " . ",
     end_padding_ms: int = 100,
+    text_suffix: str = "",
 ) -> list[dict]:
     """Run voice cloning for all sentences x ref_audios x steps."""
     results = []
@@ -251,8 +256,12 @@ def run_voice_cloning_test(
                         clause_gap_ms=clause_gap_ms,
                         comma_replace=comma_replace,
                         end_padding_ms=end_padding_ms,
+                        text_suffix=text_suffix,
                     )
                 else:
+                    # Add suffix to prevent cut-off
+                    if text_suffix:
+                        text_for_model = text_for_model + text_suffix
                     generate_kwargs = dict(
                         text=text_for_model,
                         ref_audio=str(ref_path),
@@ -485,6 +494,7 @@ def main():
     parser.add_argument("--sentence-gap-ms", type=int, default=350, help="Silence gap after . ! ? in ms (default: 350)")
     parser.add_argument("--clause-gap-ms", type=int, default=150, help="Silence gap after , ; in ms (default: 150)")
     parser.add_argument("--end-padding-ms", type=int, default=100, help="Silence padding at end of audio to avoid cut-off (default: 100)")
+    parser.add_argument("--text-suffix", type=str, default="", help="Text to append to each sentence to prevent cut-off (e.g., '...' or ' ư')")
     parser.add_argument(
         "--comma-replace", type=str, default=" . ",
         help="Thay dấu phẩy bằng chuỗi này (default: ' . '). Thử: ' ; ', ' — ', ' ... ', '  '",
@@ -554,6 +564,7 @@ def main():
         clause_gap_ms=args.clause_gap_ms,
         comma_replace=args.comma_replace,
         end_padding_ms=args.end_padding_ms,
+        text_suffix=args.text_suffix,
     )
 
     # Eval metrics
