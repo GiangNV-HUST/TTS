@@ -463,6 +463,7 @@ def save_results(results: list[dict]):
 def main():
     parser = argparse.ArgumentParser(description="OmniVoice Vietnamese TTS Test")
     parser.add_argument("--ref_audio", type=str, default=None, help="Path to single ref audio (default: all in ref_audio/)")
+    parser.add_argument("--test_file", type=str, default=None, help="Path to test sentences JSONL (default: test_data/test_sentences.jsonl)")
     parser.add_argument("--use-clean", action="store_true", help="Use ref_audio_clean/ instead of ref_audio/ (run preprocess_ref.py first)")
     parser.add_argument("--chunk", action="store_true", help="Split text by sentence and concat — better for long inputs")
     parser.add_argument("--speed", type=float, default=1.0, help="Speech speed (default: 1.0, slower: 0.85, faster: 1.15)")
@@ -488,7 +489,10 @@ def main():
         steps_list = DEFAULT_STEPS
 
     # Load test sentences
-    sentences = load_test_sentences(TEST_SENTENCES)
+    test_file = Path(args.test_file) if args.test_file else TEST_SENTENCES
+    if not test_file.is_absolute():
+        test_file = SCRIPT_DIR / test_file
+    sentences = load_test_sentences(test_file)
     if args.quick:
         sentences = [s for s in sentences if s["id"] in QUICK_SENTENCES]
     print(f"Loaded {len(sentences)} test sentences")

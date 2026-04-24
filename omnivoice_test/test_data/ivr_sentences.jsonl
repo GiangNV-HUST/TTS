@@ -1,0 +1,23 @@
+{"id": "ivr_01a", "text": "Chào quý khách, cuộc gọi vừa rồi bị gián đoạn do hết tiền. Quý khách vui lòng nói 'Tôi muốn tiếp tục' để gọi lại số"}
+{"id": "ivr_01b", "text": "nói 'Gọi số khác' để nhập số khác, hoặc nói 'Nghe giá' để biết thông tin cước phí. Nếu cần nghe lại, quý khách chỉ cần nói 'Nghe lại'"}
+{"id": "ivr_02a", "text": "Cuộc gọi đang được kết nối tới số"}
+{"id": "ivr_02b", "text": "Quý khách có năm phút để tiếp tục đàm thoại. Cước nội mạng là một nghìn bảy trăm ba mươi đồng mỗi phút. Cước ngoại mạng là một nghìn chín trăm ba mươi đồng mỗi phút."}
+{"id": "ivr_03", "text": "Quý khách vui lòng nói rõ số điện thoại cần gọi, ví dụ: không tám chín"}
+{"id": "ivr_04", "text": "Cước nội mạng là một nghìn bảy trăm ba mươi đồng mỗi phút. Cước ngoại mạng là một nghìn chín trăm ba mươi đồng mỗi phút. Quý khách có thể nói 'Tiếp tục', 'Gọi số khác' hoặc 'Nghe lại'."}
+{"id": "ivr_05a", "text": "Tôi ghi nhận quý khách muốn gọi đến số"}
+{"id": "ivr_05b", "text": "Nếu đúng, hãy nói 'Đúng rồi'. Nếu số chưa đúng, hãy nói 'Tôi muốn đổi số'."}
+{"id": "ivr_06", "text": "Thông tin Quý khách cung cấp chưa chính xác sau ba lần thử. Cuộc gọi sẽ kết thúc tại đây."}
+{"id": "ivr_07", "text": "Xin lỗi, hệ thống chưa nhận diện được số điện thoại do có ký tự không phải số. Quý khách vui lòng nói lại rõ ràng từng số, ví dụ: không ba năm. Hệ thống sẽ xác nhận lại sau khi thu âm."}
+{"id": "ivr_08", "text": "Xin lỗi, hệ thống chưa nhận diện được số điện thoại do dài quá mười số. Quý khách vui lòng nói lại rõ ràng từng số, ví dụ: không ba năm. Hệ thống sẽ xác nhận lại sau khi thu âm."}
+{"id": "ivr_09", "text": "Rất tiếc, thuê bao quý khách đang gọi hiện không thể kết nối do bận máy hoặc ngoài vùng phủ sóng. Nói 'Gọi lại' để thực hiện lại giao dịch. Hoặc nói 'Thoát' để kết thúc cuộc gọi"}
+{"id": "ivr_10", "text": "Xin lỗi, dịch vụ đang gặp lỗi hệ thống. Quý khách vui lòng nói 'Gọi lại một không chín tám' nếu muốn thử lại, hoặc nói 'Kết thúc' để rời khỏi hệ thống. Hỗ trợ thêm, gọi một tám không không chấm một không chín một miễn phí hoặc truy cập vinaphone chấm com chấm vi en."}
+{"id": "num_0", "text": "không"}
+{"id": "num_1", "text": "một"}
+{"id": "num_2", "text": "hai"}
+{"id": "num_3", "text": "ba"}
+{"id": "num_4", "text": "bốn"}
+{"id": "num_5", "text": "năm"}
+{"id": "num_6", "text": "sáu"}
+{"id": "num_7", "text": "bảy"}
+{"id": "num_8", "text": "tám"}
+{"id": "num_9", "text": "chín"}
