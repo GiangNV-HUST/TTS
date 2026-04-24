@@ -10,7 +10,7 @@
 {"id": "ivr_07", "text": "Xin lỗi, hệ thống chưa nhận diện được số điện thoại do có ký tự không phải số. Quý khách vui lòng nói lại rõ ràng từng số, ví dụ: không ba năm. Hệ thống sẽ xác nhận lại sau khi thu âm."}
 {"id": "ivr_08", "text": "Xin lỗi, hệ thống chưa nhận diện được số điện thoại do dài quá mười số. Quý khách vui lòng nói lại rõ ràng từng số, ví dụ: không ba năm. Hệ thống sẽ xác nhận lại sau khi thu âm."}
 {"id": "ivr_09", "text": "Rất tiếc, thuê bao quý khách đang gọi hiện không thể kết nối do bận máy hoặc ngoài vùng phủ sóng. Nói 'Gọi lại' để thực hiện lại giao dịch. Hoặc nói 'Thoát' để kết thúc cuộc gọi"}
-{"id": "ivr_10", "text": "Xin lỗi, dịch vụ đang gặp lỗi hệ thống. Quý khách vui lòng nói 'Gọi lại một không chín tám' nếu muốn thử lại, hoặc nói 'Kết thúc' để rời khỏi hệ thống. Hỗ trợ thêm, gọi một tám không không chấm một không chín một miễn phí hoặc truy cập vinaphone chấm com chấm vi en."}
+{"id": "ivr_10", "text": "Xin lỗi, dịch vụ đang gặp lỗi hệ thống. Quý khách vui lòng nói 'Gọi lại một không chín tám' nếu muốn thử lại, hoặc nói 'Kết thúc' để rời khỏi hệ thống. Hỗ trợ thêm, gọi một tám không không một không chín một miễn phí hoặc truy cập vinaphone chấm com chấm vi en."}
 {"id": "num_0", "text": "không"}
 {"id": "num_1", "text": "một"}
 {"id": "num_2", "text": "hai"}
