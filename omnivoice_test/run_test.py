@@ -142,6 +142,7 @@ def generate_chunked(
     sentence_gap_ms: int = 350,
     clause_gap_ms: int = 150,
     comma_replace: str = " . ",
+    end_padding_ms: int = 100,
 ) -> tuple[torch.Tensor, list[str]]:
     """Chia text theo câu, generate từng câu, ghép lại."""
     text = normalize_commas(text, comma_replace)
@@ -166,6 +167,12 @@ def generate_chunked(
     ]
 
     final = crossfade_concat(audios, SAMPLE_RATE, gap_ms_list=gap_list)
+
+    # Add padding silence at the end to avoid cutting off last word
+    if end_padding_ms > 0:
+        pad_len = int(SAMPLE_RATE * end_padding_ms / 1000)
+        final = torch.cat([final, torch.zeros(1, pad_len)], dim=-1)
+
     return final, [c["text"] for c in chunks]
 
 
@@ -192,6 +199,7 @@ def run_voice_cloning_test(
     sentence_gap_ms: int = 350,
     clause_gap_ms: int = 150,
     comma_replace: str = " . ",
+    end_padding_ms: int = 100,
 ) -> list[dict]:
     """Run voice cloning for all sentences x ref_audios x steps."""
     results = []
@@ -242,6 +250,7 @@ def run_voice_cloning_test(
                         sentence_gap_ms=sentence_gap_ms,
                         clause_gap_ms=clause_gap_ms,
                         comma_replace=comma_replace,
+                        end_padding_ms=end_padding_ms,
                     )
                 else:
                     generate_kwargs = dict(
@@ -255,6 +264,12 @@ def run_voice_cloning_test(
                     audio = model.generate(**generate_kwargs)
                     audio_tensor = audio[0]
                     sub_chunks = None
+                    # Add padding silence at the end
+                    if end_padding_ms > 0:
+                        if audio_tensor.dim() == 1:
+                            audio_tensor = audio_tensor.unsqueeze(0)
+                        pad_len = int(SAMPLE_RATE * end_padding_ms / 1000)
+                        audio_tensor = torch.cat([audio_tensor, torch.zeros(1, pad_len)], dim=-1)
 
                 torch.cuda.synchronize()
                 t_end = time.perf_counter()
@@ -469,6 +484,7 @@ def main():
     parser.add_argument("--speed", type=float, default=1.0, help="Speech speed (default: 1.0, slower: 0.85, faster: 1.15)")
     parser.add_argument("--sentence-gap-ms", type=int, default=350, help="Silence gap after . ! ? in ms (default: 350)")
     parser.add_argument("--clause-gap-ms", type=int, default=150, help="Silence gap after , ; in ms (default: 150)")
+    parser.add_argument("--end-padding-ms", type=int, default=100, help="Silence padding at end of audio to avoid cut-off (default: 100)")
     parser.add_argument(
         "--comma-replace", type=str, default=" . ",
         help="Thay dấu phẩy bằng chuỗi này (default: ' . '). Thử: ' ; ', ' — ', ' ... ', '  '",
@@ -537,6 +553,7 @@ def main():
         sentence_gap_ms=args.sentence_gap_ms,
         clause_gap_ms=args.clause_gap_ms,
         comma_replace=args.comma_replace,
+        end_padding_ms=args.end_padding_ms,
     )
 
     # Eval metrics
