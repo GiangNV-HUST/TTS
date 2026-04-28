@@ -205,6 +205,8 @@ def run_voice_cloning_test(
     comma_replace: str = " . ",
     end_padding_ms: int = 100,
     text_suffix: str = "",
+    repeat_short: int = 0,
+    short_threshold: int = 2,
 ) -> list[dict]:
     """Run voice cloning for all sentences x ref_audios x steps."""
     results = []
@@ -262,6 +264,15 @@ def run_voice_cloning_test(
                     # Add suffix to prevent cut-off
                     if text_suffix:
                         text_for_model = text_for_model + text_suffix
+
+                    # Repeat short text to prevent cut-off, then trim
+                    word_count = len(text_for_model.split())
+                    repeat_count = 1
+                    if repeat_short > 0 and word_count <= short_threshold:
+                        repeat_count = repeat_short
+                        text_for_model = " ".join([text_for_model.rstrip(".!?")] * repeat_count) + "."
+                        print(f"  [repeat-short] '{text}' -> '{text_for_model}'")
+
                     generate_kwargs = dict(
                         text=text_for_model,
                         ref_audio=str(ref_path),
@@ -273,6 +284,15 @@ def run_voice_cloning_test(
                     audio = model.generate(**generate_kwargs)
                     audio_tensor = audio[0]
                     sub_chunks = None
+
+                    # Trim to first 1/N if repeated
+                    if repeat_count > 1:
+                        if audio_tensor.dim() == 1:
+                            audio_tensor = audio_tensor.unsqueeze(0)
+                        trim_len = audio_tensor.shape[-1] // repeat_count
+                        audio_tensor = audio_tensor[:, :trim_len]
+                        print(f"  [repeat-short] trimmed to {trim_len / SAMPLE_RATE:.2f}s")
+
                     # Add padding silence at the end
                     if end_padding_ms > 0:
                         if audio_tensor.dim() == 1:
@@ -495,6 +515,8 @@ def main():
     parser.add_argument("--clause-gap-ms", type=int, default=150, help="Silence gap after , ; in ms (default: 150)")
     parser.add_argument("--end-padding-ms", type=int, default=100, help="Silence padding at end of audio to avoid cut-off (default: 100)")
     parser.add_argument("--text-suffix", type=str, default="", help="Text to append to each sentence to prevent cut-off (e.g., '...' or ' ư')")
+    parser.add_argument("--repeat-short", type=int, default=0, help="Repeat short text N times, gen, then trim to 1/N (e.g., 4 for 'bảy' -> 'bảy bảy bảy bảy')")
+    parser.add_argument("--short-threshold", type=int, default=2, help="Max word count to consider 'short' for --repeat-short (default: 2)")
     parser.add_argument(
         "--comma-replace", type=str, default=" . ",
         help="Thay dấu phẩy bằng chuỗi này (default: ' . '). Thử: ' ; ', ' — ', ' ... ', '  '",
@@ -565,6 +587,8 @@ def main():
         comma_replace=args.comma_replace,
         end_padding_ms=args.end_padding_ms,
         text_suffix=args.text_suffix,
+        repeat_short=args.repeat_short,
+        short_threshold=args.short_threshold,
     )
 
     # Eval metrics
