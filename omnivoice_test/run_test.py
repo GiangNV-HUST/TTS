@@ -207,6 +207,7 @@ def run_voice_cloning_test(
     text_suffix: str = "",
     repeat_short: int = 0,
     short_threshold: int = 2,
+    no_trim: bool = False,
 ) -> list[dict]:
     """Run voice cloning for all sentences x ref_audios x steps."""
     results = []
@@ -285,8 +286,8 @@ def run_voice_cloning_test(
                     audio_tensor = audio[0]
                     sub_chunks = None
 
-                    # Trim to first 1/N if repeated
-                    if repeat_count > 1:
+                    # Trim to first 1/N if repeated (unless --no-trim)
+                    if repeat_count > 1 and not no_trim:
                         if audio_tensor.dim() == 1:
                             audio_tensor = audio_tensor.unsqueeze(0)
                         trim_len = audio_tensor.shape[-1] // repeat_count
@@ -517,6 +518,7 @@ def main():
     parser.add_argument("--text-suffix", type=str, default="", help="Text to append to each sentence to prevent cut-off (e.g., '...' or ' ư')")
     parser.add_argument("--repeat-short", type=int, default=0, help="Repeat short text N times, gen, then trim to 1/N (e.g., 4 for 'bảy' -> 'bảy bảy bảy bảy')")
     parser.add_argument("--short-threshold", type=int, default=2, help="Max word count to consider 'short' for --repeat-short (default: 2)")
+    parser.add_argument("--no-trim", action="store_true", help="Don't trim when using --repeat-short (keep full repeated audio)")
     parser.add_argument(
         "--comma-replace", type=str, default=" . ",
         help="Thay dấu phẩy bằng chuỗi này (default: ' . '). Thử: ' ; ', ' — ', ' ... ', '  '",
@@ -589,6 +591,7 @@ def main():
         text_suffix=args.text_suffix,
         repeat_short=args.repeat_short,
         short_threshold=args.short_threshold,
+        no_trim=args.no_trim,
     )
 
     # Eval metrics
