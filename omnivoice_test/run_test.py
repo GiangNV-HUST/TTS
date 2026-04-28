@@ -208,6 +208,7 @@ def run_voice_cloning_test(
     repeat_short: int = 0,
     short_threshold: int = 2,
     no_trim: bool = False,
+    repeat_separator: str = ". ",
 ) -> list[dict]:
     """Run voice cloning for all sentences x ref_audios x steps."""
     results = []
@@ -271,7 +272,7 @@ def run_voice_cloning_test(
                     repeat_count = 1
                     if repeat_short > 0 and word_count <= short_threshold:
                         repeat_count = repeat_short
-                        text_for_model = " ".join([text_for_model.rstrip(".!?")] * repeat_count) + "."
+                        text_for_model = repeat_separator.join([text_for_model.rstrip(".!?")] * repeat_count) + "."
                         print(f"  [repeat-short] '{text}' -> '{text_for_model}'")
 
                     generate_kwargs = dict(
@@ -519,6 +520,7 @@ def main():
     parser.add_argument("--repeat-short", type=int, default=0, help="Repeat short text N times, gen, then trim to 1/N (e.g., 4 for 'bảy' -> 'bảy bảy bảy bảy')")
     parser.add_argument("--short-threshold", type=int, default=2, help="Max word count to consider 'short' for --repeat-short (default: 2)")
     parser.add_argument("--no-trim", action="store_true", help="Don't trim when using --repeat-short (keep full repeated audio)")
+    parser.add_argument("--repeat-separator", type=str, default=". ", help="Separator between repeated words (default: '. ' for pause)")
     parser.add_argument(
         "--comma-replace", type=str, default=" . ",
         help="Thay dấu phẩy bằng chuỗi này (default: ' . '). Thử: ' ; ', ' — ', ' ... ', '  '",
@@ -592,6 +594,7 @@ def main():
         repeat_short=args.repeat_short,
         short_threshold=args.short_threshold,
         no_trim=args.no_trim,
+        repeat_separator=args.repeat_separator,
     )
 
     # Eval metrics
