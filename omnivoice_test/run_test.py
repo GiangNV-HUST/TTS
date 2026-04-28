@@ -209,6 +209,7 @@ def run_voice_cloning_test(
     short_threshold: int = 2,
     no_trim: bool = False,
     repeat_separator: str = ". ",
+    short_speed: float | None = None,
 ) -> list[dict]:
     """Run voice cloning for all sentences x ref_audios x steps."""
     results = []
@@ -270,16 +271,22 @@ def run_voice_cloning_test(
                     # Repeat short text to prevent cut-off, then trim
                     word_count = len(text_for_model.split())
                     repeat_count = 1
-                    if repeat_short > 0 and word_count <= short_threshold:
+                    is_short = word_count <= short_threshold
+                    if repeat_short > 0 and is_short:
                         repeat_count = repeat_short
                         text_for_model = repeat_separator.join([text_for_model.rstrip(".!?")] * repeat_count) + "."
                         print(f"  [repeat-short] '{text}' -> '{text_for_model}'")
+
+                    # Use short_speed for short text if specified
+                    actual_speed = short_speed if (is_short and short_speed is not None) else speed
+                    if is_short and short_speed is not None:
+                        print(f"  [short-speed] using speed={actual_speed}")
 
                     generate_kwargs = dict(
                         text=text_for_model,
                         ref_audio=str(ref_path),
                         num_step=num_step,
-                        speed=speed,
+                        speed=actual_speed,
                     )
                     if ref_text:
                         generate_kwargs["ref_text"] = ref_text
@@ -521,6 +528,7 @@ def main():
     parser.add_argument("--short-threshold", type=int, default=2, help="Max word count to consider 'short' for --repeat-short (default: 2)")
     parser.add_argument("--no-trim", action="store_true", help="Don't trim when using --repeat-short (keep full repeated audio)")
     parser.add_argument("--repeat-separator", type=str, default=". ", help="Separator between repeated words (default: '. ' for pause)")
+    parser.add_argument("--short-speed", type=float, default=None, help="Speed for short text (default: same as --speed)")
     parser.add_argument(
         "--comma-replace", type=str, default=" . ",
         help="Thay dấu phẩy bằng chuỗi này (default: ' . '). Thử: ' ; ', ' — ', ' ... ', '  '",
@@ -595,6 +603,7 @@ def main():
         short_threshold=args.short_threshold,
         no_trim=args.no_trim,
         repeat_separator=args.repeat_separator,
+        short_speed=args.short_speed,
     )
 
     # Eval metrics
