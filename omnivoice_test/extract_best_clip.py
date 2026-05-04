@@ -238,7 +238,7 @@ def main():
     parser = argparse.ArgumentParser(description="Extract best clip for voice cloning")
     parser.add_argument("input", type=str, help="Input audio file")
     parser.add_argument("--output", "-o", type=str, default=None, help="Output file (default: input_clip.wav)")
-    parser.add_argument("--min-duration", type=float, default=5.0, help="Minimum clip duration (default: 5s)")
+    parser.add_argument("--min-duration", type=float, default=7.0, help="Minimum clip duration (default: 7s)")
     parser.add_argument("--max-duration", type=float, default=10.0, help="Maximum clip duration (default: 10s)")
     args = parser.parse_args()
 
